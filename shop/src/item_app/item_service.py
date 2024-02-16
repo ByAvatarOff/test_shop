@@ -20,7 +20,7 @@ class ItemService:
         """Get list menu"""
         list_items = await self.item_repo.get_all_menus()
         return [
-            ItemReadSchema.from_orm(item)
+            ItemReadSchema.model_validate(item)
             for item in list_items
         ]
 
@@ -29,7 +29,7 @@ class ItemService:
             item_payload: ItemCreateSchema,
     ) -> ItemReadSchema:
         """Create menu"""
-        return ItemReadSchema.from_orm(
+        return ItemReadSchema.model_validate(
             await self.item_repo.create_item(
                 item_payload=item_payload
             )
@@ -40,7 +40,7 @@ class ItemService:
             item_id: int
     ) -> ItemReadSchema:
         """Get item by id"""
-        return ItemReadSchema.from_orm(
+        return ItemReadSchema.model_validate(
             await self.item_repo.get_item(
                 item_id=item_id
             )
@@ -52,7 +52,7 @@ class ItemService:
             item_payload: ItemCreateSchema,
     ) -> ItemReadSchema:
         """Update menu by id"""
-        return ItemReadSchema.from_orm(
+        return ItemReadSchema.model_validate(
             await self.item_repo.update_item(
                 item_id=item_id,
                 item_payload=item_payload

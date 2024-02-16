@@ -1,4 +1,4 @@
-from rest_framework import permissions, status
+from rest_framework import permissions
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -17,33 +17,27 @@ class ItemViewSet(ViewSet):
 
     def get_list_items(self, request: Request) -> Response:
         """Get list items"""
-        list_items = ItemService.get_list_items()
-        return Response(status=status.HTTP_200_OK, data=list_items)
+        return ItemService.get_list_items()
 
     def get_item(self, request: Request, pk: int) -> Response:
         """Get item by id"""
-        item = ItemService.get_item(item_id=pk)
-        return Response(data=item)
+        return ItemService.get_item(item_id=pk)
 
     def create_item(self, request: Request) -> Response:
         """Create item"""
-        created_item = ItemService.create_item(request.data)
-        return Response(data=created_item)
+        return ItemService.create_item(request.data)
 
     def update_item(self, request: Request, pk: int) -> Response:
         """Update item by id"""
-        updated_item = ItemService.update_item(item_id=pk, payload=request.data)
-        return Response(data=updated_item)
+        return ItemService.update_item(item_id=pk, payload=request.data)
 
     def delete_item(self, request: Request, pk: int):
         """Delete item by id"""
-        response = ItemService.delete_item(item_id=pk)
-        return Response(data=response)
+        return ItemService.delete_item(item_id=pk)
 
     def delete_all_items(self, request: Request):
         """Delete all items"""
-        response = ItemService.delete_all_items()
-        return Response(data=response)
+        return ItemService.delete_all_items()
 
     def get_permissions(self):
         try:

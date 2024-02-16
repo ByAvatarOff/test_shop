@@ -2,21 +2,21 @@ from typing import Callable
 
 import httpx
 from config import SHOP_SERVICE_URL
-from httpx import Client, ConnectError
+from httpx import Client, ConnectError, Response
 
 
 class HttpxSession:
-    """Create httpx client and return json response from url"""
+    """Create httpx client and return response from url"""
 
     @staticmethod
     def session_decorator(func: Callable) -> Callable:
         """create httpx sync session decorator"""
         def wrapper(*args, **kwargs):
-            with httpx.Client(base_url=SHOP_SERVICE_URL) as client:
+            with httpx.Client(base_url=f'http://{SHOP_SERVICE_URL}:8001') as client:
                 try:
                     return func(*args, client=client, **kwargs)
                 except ConnectError:
-                    return []
+                    return Response(status_code=400, json={'detail': 'Shop service is unavailable'})
         return wrapper
 
     @staticmethod
@@ -24,9 +24,9 @@ class HttpxSession:
     def get(
             client: Client,
             url: str,
-    ) -> dict:
+    ) -> Response:
         """custom get method use https"""
-        return client.get(url).json()
+        return client.get(url)
 
     @staticmethod
     @session_decorator
@@ -34,9 +34,9 @@ class HttpxSession:
             client: Client,
             url: str,
             payload: dict
-    ) -> dict:
+    ) -> Response:
         """custom post method use https"""
-        return client.post(url, json=payload).json()
+        return client.post(url, json=payload)
 
     @staticmethod
     @session_decorator
@@ -44,15 +44,15 @@ class HttpxSession:
             client: Client,
             url: str,
             payload: dict
-    ) -> dict:
+    ) -> Response:
         """custom patch method use https"""
-        return client.patch(url, json=payload).json()
+        return client.patch(url, json=payload)
 
     @staticmethod
     @session_decorator
     def delete(
             client: Client,
             url: str,
-    ) -> dict:
+    ) -> Response:
         """custom delete method use https"""
-        return client.delete(url).json()
+        return client.delete(url)

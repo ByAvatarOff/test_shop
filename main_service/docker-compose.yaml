@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  backend:
+    container_name: backend
+    networks:
+      - main_network
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    restart: always
+    environment:
+      - DB_HOST=db_backend
+      - SHOP_SERVICE_URL=shop_service
+    depends_on:
+        db_backend:
+          condition: service_healthy
+
+  db_backend:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    networks:
+      - main_network
+    container_name: db_backend
+    command: -p ${DB_PORT}
+    expose:
+      - ${DB_PORT}
+    volumes:
+      - backend_pg_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: pg_isready -U ${DB_USER} -p ${DB_PORT}
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+networks:
+  main_network:
+    external: true
+volumes:
+  backend_pg_data:

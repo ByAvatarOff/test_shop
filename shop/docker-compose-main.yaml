@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  shop_service:
+    container_name: shop_service
+    networks:
+      - main_network
+    build:
+      context: .
+      dockerfile: Dockerfile_main
+    ports:
+      - "8001:8001"
+    restart: always
+    environment:
+      - DB_HOST=shop_db
+    depends_on:
+        shop_db:
+          condition: service_healthy
+
+  shop_db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    networks:
+      - main_network
+    container_name: shop_db
+    command: -p ${DB_PORT}
+    expose:
+      - ${DB_PORT}
+    volumes:
+      - shop_db_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: pg_isready -U ${DB_USER} -p ${DB_PORT}
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+networks:
+  main_network:
+    external: true
+volumes:
+  shop_db_data:

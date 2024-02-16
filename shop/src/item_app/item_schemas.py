@@ -2,11 +2,13 @@
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, ConfigDict, field_serializer, field_validator
 
 
 class ItemReadSchema(BaseModel):
     """Item read schema"""
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     title: str
     description: str
@@ -14,8 +16,16 @@ class ItemReadSchema(BaseModel):
     origin_country: str
     date_add: datetime
 
-    class Config:
-        from_attributes = True
+    @field_serializer('price')
+    def convert_to_2_decimal_places(self, price):
+        """
+        Serialize price for input
+        Only two decimal_places
+        """
+        try:
+            return f'{Decimal(price):.2f}'
+        except InvalidOperation:
+            raise ValueError('Invalid type price')
 
 
 class ItemCreateSchema(BaseModel):
