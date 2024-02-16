@@ -11,6 +11,7 @@ docker network create main_network
 ```
 ### Запуск тестов для микросервиса shop
 ```shell
+cd shop
 docker-compose -f docker-compose-tests.yaml up --build
 ```
 ### Запуск в фоне микросервиса shop
@@ -21,6 +22,8 @@ docker-compose -f docker-compose-main.yaml start
 
 ### Запуск основного бэкенда (вместе с тестами)
 ```shell
+cd ..
+cd main_service
 docker-compose up --build
 ```
 ### Запуск основного бэкенда в фоновом режиме
