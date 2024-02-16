@@ -1,7 +1,7 @@
 from typing import Callable
 
 import httpx
-from config import SHOP_SERVICE_URL
+from config import SHOP_SERVICE_URL, SHOP_SERVICE_PORT
 from httpx import Client, ConnectError, Response
 
 
@@ -12,7 +12,7 @@ class HttpxSession:
     def session_decorator(func: Callable) -> Callable:
         """create httpx sync session decorator"""
         def wrapper(*args, **kwargs):
-            with httpx.Client(base_url=f'http://{SHOP_SERVICE_URL}:8001') as client:
+            with httpx.Client(base_url=f'http://{SHOP_SERVICE_URL}:{SHOP_SERVICE_PORT}') as client:
                 try:
                     return func(*args, client=client, **kwargs)
                 except ConnectError:

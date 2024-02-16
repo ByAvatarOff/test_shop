@@ -1,14 +1,14 @@
 version: '3'
 
 services:
-  backend:
-    container_name: backend_tests
+  test_shop:
+    container_name: test_shop
     external_links:
       - db-test-pg:db-test-pg
     environment:
       - DB_HOST_TEST=db-test-pg
     networks:
-      - backend_tests_network
+      - shop_tests_network
     build:
       context: .
       dockerfile: Dockerfile_tests
@@ -26,7 +26,7 @@ services:
       - POSTGRES_USER=${DB_USER_TEST}
       - POSTGRES_PASSWORD=${DB_PASS_TEST}
     networks:
-      - backend_tests_network
+      - shop_tests_network
     command: -p ${DB_PORT_TEST}
     expose:
       - ${DB_PORT_TEST}
@@ -38,5 +38,5 @@ services:
       retries: 3
 
 networks:
-  backend_tests_network:
-    name: backend_tests_network
+  shop_tests_network:
+    name: shop_tests_network
