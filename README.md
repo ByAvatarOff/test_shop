@@ -14,13 +14,13 @@ docker network create main_network
 cd shop
 docker-compose -f docker-compose-tests.yaml up --build
 ```
-### Запуск в фоне микросервиса shop
+### Запуск в фоне микросервиса shop. Адрес URL: http://127.0.0.1:8001/docs
 ```shell
 docker-compose -f docker-compose-main.yaml create
 docker-compose -f docker-compose-main.yaml start
 ```
 
-### Запуск основного бэкенда (вместе с тестами)
+### Запуск основного бэкенда (вместе с тестами) Адрес URL: http://127.0.0.1:8000
 ```shell
 cd ..
 cd main_service
